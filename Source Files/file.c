@@ -46,12 +46,12 @@ char* readRemaining(FILE* file)
 	char* content = (char*)malloc( ( sizeof(char) * contentLength ) + 1);
 
 	char nextSymbol;
-	int nextSymbolIdx = 0;
+	int nextSymbolIdx = -1;
 	while (!feof(file))
 	{
+		nextSymbolIdx++;
 		nextSymbol = readNext(file);
 		content[nextSymbolIdx] = nextSymbol;
-		nextSymbolIdx++;
 	}
 	content[nextSymbolIdx] = '\0';
 
