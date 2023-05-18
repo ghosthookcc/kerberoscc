@@ -18,11 +18,11 @@ char* readNextChars(FILE* file, int amount)
 {
 	char* content = (char*)malloc( ( sizeof(char) * amount ) + 1);
 
-	int nextCharIdx = 0;
+	int nextCharIdx = -1;
 	while (!feof(file) && nextCharIdx < amount)
 	{
-		content[nextCharIdx] = readNext(file);
 		nextCharIdx++; 
+		content[nextCharIdx] = readNext(file);
 	}
 	content[nextCharIdx] = '\0';
 
