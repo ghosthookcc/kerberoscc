@@ -6,12 +6,13 @@
 static const char* KerberosOperations[] = 
 {
 	"+",
+	"*",
 	"="
 };
 
 static const char* KerberosKeywords[] = 
 {
-	"void",
+	"void", 
 
 	"u8",
 	"u16",
@@ -34,6 +35,7 @@ static const char* KerberosKeywords[] =
 
 	"basis",
 	"composition",
+	"enum",
 
 	"global",
 	"local",
@@ -44,17 +46,18 @@ static const char* KerberosKeywords[] =
 	"else",
 	"while",
 	"for",
+	"continue",
+	"break",
 
 	"with",
 	"scope",
 	"as",
-	"continue",
-	"break",
 	"self",
 
 	"impl",
 	"constructor",
 
+	"unimplemented",
 	"return"
 };
 
