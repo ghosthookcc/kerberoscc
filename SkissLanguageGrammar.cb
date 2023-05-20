@@ -36,7 +36,7 @@ global basis main() return i32
 
 	print@(vectorOut); // would need a toString function to make this properly work with print macro
 
-	/* output2: char = getFifth<i32>[char](12); this would mean that the first argument passed in is a i32 type and the return type will be a char, the input value for the argument is 12 */
+	/* output2: char = getFifth<i32>[char](12); this would mean that the first argument passed is a i32 type and the return type will be a char, the input value for the argument is an i32 with the value 12 */
 } 
 
 global basis getFifth() return [char | string]
@@ -59,7 +59,7 @@ global basis getFifth() return [char | string]
 
 impl return char for getFifth with ()
 {
-	while ( (i32)scope[local].charStart < (i32)'e' )
+	while ( scope[local].charStart as i32 < 'e' as i32 )
 	{
 		scope[local].charStart++;
 	}
