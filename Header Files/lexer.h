@@ -9,9 +9,53 @@ static const char* KerberosOperations[] =
 	"="
 };
 
-static const char KerberosKeywords[] = 
+static const char* KerberosKeywords[] = 
 {
-	"i32"
+	"void",
+
+	"u8",
+	"u16",
+	"u32",
+	"u64",
+
+	"i8",
+	"i16",
+	"i32",
+	"i64",
+
+	"f32",
+	"f64",
+
+	"char",
+	"string",
+
+	"static",
+	"const",
+
+	"basis",
+	"composition",
+
+	"global",
+	"local",
+	"shared",
+
+	"if"
+	"elif"
+	"else",
+	"while",
+	"for",
+
+	"with",
+	"scope",
+	"as",
+	"continue",
+	"break",
+	"self",
+
+	"impl",
+	"constructor",
+
+	"return"
 };
 
 typedef enum KerberosTokenType
@@ -28,7 +72,7 @@ typedef struct KerberosToken
 	unsigned int startPosition;
 	unsigned int endPosition;
 	KerberosTokenType type;
-	char token[10];
+	char* token;
 } Token;
 
 #endif // LEXER_H
