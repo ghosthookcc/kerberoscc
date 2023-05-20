@@ -1,0 +1,171 @@
+// global -> local -> shared
+   
+// decorators should be a thing to be implemented for later:
+// decorators start with @, for example,
+// @server just before basis adding the decorator functionallity for the basis
+// decorator syntax can also be used when overloading, for example,
+// @multiply(vec3f1, vec3f2) which would execute the overload for the name multiply,
+// in this case it would multiply vec3f1 with vec3f2 using the rules defined in the overload
+
+// macros should be a thing to be implemented for later:
+// macros end with @ when called, for example,
+// print@ putting the @ just after the macro name executing the macro using the name
+
+// can scope to context or type:
+// content can be global, local or shared
+// types are just what they seem like
+
+// self: should be implemented for compositions and types
+
+// unsure if: [] or {} should be used for certain code bodies
+
+// how should doc strings be structured by default . . . ?
+
+// should be able to type u8 or char for unsigned int of byte size 1, in bits, being 8
+
+global basis main() return i32
+{
+	output: char = getFifth[char](); // before (), [char] = return type of function
+	output2: string = getFifth[string](); 
+	m1<f32, i32>(12.5f, 12); 
+
+	vector1: Math.vec3f = new Math.vec3f(12.5f, 12.5f, 12.5f);
+	vector2: Math.vec3f = new Math.vec3f(2.0f, 2.0f, 2.0f);
+
+	vectorOut: Math.vec3f = @multiply(vector1, vector2);
+
+	print@(vectorOut); // would need a toString function to make this properly work with print macro
+
+	/* output2: char = getFifth<i32>[char](12); this would mean that the first argument passed in is a i32 type and the return type will be a char, the input value for the argument is 12 */
+} 
+
+global basis getFifth() return [char | string]
+{
+	global for scope
+	[
+		// do stuff here that every return has access to
+	];
+
+	local for scope[char]
+	[
+		charStart: char = 'a'; 
+	];
+	
+	local for scope[string]
+	[
+		strStart: i32 = "abc"; 
+	];
+}
+
+impl return char for getFifth with ()
+{
+	while ( (i32)scope[local].charStart < (i32)'e' )
+	{
+		scope[local].charStart++;
+	}
+}
+impl return string for getFifth with ()
+{
+	findNewEndOfString: i32 = (scope[local].strStart[::-1] as i32)++;
+	while (findNewEndOfString < ('e' as i32))
+	{
+		scope[local].strStart += findNewEndOfString;
+		repeat(findNewEndOfString)
+	}	
+}
+
+global composition Test
+{
+	global basis m1 with (i: f32, j: i32) return void for Test
+	{
+		print@("f32, i32 :: method");
+	}  
+	global basis m1 with (i: f32, j: f32) return void for Test
+	{
+		print@("f32, f32 :: method");
+	}
+}
+
+global composition Math
+{
+	constructor with (number: i32) for Math
+	[
+
+	];
+	
+	// border även kunna skrivas som:
+	/*
+	constructor with (number: i32) for composition as Base // kanske kan ha det här: using (number: i32)
+	[
+
+	];
+	*/
+}
+
+type vec3f for Math
+{
+	constructor with (x: f32, y: f32, z: f32) for vec3f
+	{
+		self.x = x;
+		self.y = y;
+		self.z = z;	
+	}
+}
+
+impl basis isZero with () return vec3f for vec3f
+{
+	isZero: bool = False;
+	if ( self.x == 0.0f 
+	&&   self.y == 0.0f
+	&&   self.z == 0.0f )
+	{
+		isZero = True;
+	}
+	return isZero;
+} 
+
+overload @multiply for vec3f with other vec3f
+{
+	vec3f.x *= other.x;
+	vec3f.y *= other.y;
+	vec3f.z *= other.z;
+	return vec3f;	
+}
+
+impl global basis isEven with (number: i32) return bool for Math // return could possibly be turned into keyword [returning] without the brackets?
+{
+	isEven: bool = False
+	if ( number % 2 == 0 ) isEven = True;
+	return isEven;
+}
+
+impl global composition Vector for Math
+{
+	constructor with (number: i32) for Vector
+	[
+
+	];
+
+	// border även kunna skrivas som:
+	/*
+	constructor with (number: i32) for composition as Child
+	[
+
+	];
+	*/
+}
+
+/*
+global basis isEven with (number: i32) return [bool] >> 
+	global return isEven: bool = False
+{
+	if ( number % 2  == 0 ) isEven = True;
+}
+*/
+
+/*
+local basis isEven(number: i32) -> bool until True -> isEven = False
+{
+	if ( number % 2  == 0 ) isEven = True;
+}
+*/
