@@ -3,13 +3,13 @@
 
 #include <stdio.h>
 
-static const char* Operations[] = 
+static const char* KerberosOperations[] = 
 {
 	"+",
 	"="
 };
 
-static const char Keywords[] = 
+static const char KerberosKeywords[] = 
 {
 	"i32"
 };
@@ -22,6 +22,7 @@ typedef enum KerberosTokenType
 } KerberosTokenType;
 
 // 2 bytes of padding
+// 24 bytes in total
 typedef struct KerberosToken 
 {
 	unsigned int startPosition;
