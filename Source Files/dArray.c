@@ -43,6 +43,7 @@ void freeInt32Array(int32Array** target)
 	free(targetDerefed->items);
 	targetDerefed->items = NULL;
 	targetDerefed->realSize = targetDerefed->capacity = 0;
+	free(targetDerefed);
 }
 
 /* End int32Array definition */
