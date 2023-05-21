@@ -1,7 +1,7 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include <stdio.h>
+#include "file.h"
 
 static const char* KerberosOperations[] = 
 {
@@ -9,6 +9,7 @@ static const char* KerberosOperations[] =
 	"*",
 	"="
 };
+static int KerberosOperationsLength = 3;
 
 static const char* KerberosKeywords[] = 
 {
@@ -60,6 +61,7 @@ static const char* KerberosKeywords[] =
 	"unimplemented",
 	"return"
 };
+static int KerberosKeywordsLength = 36;
 
 typedef enum KerberosTokenType
 {
@@ -77,5 +79,7 @@ typedef struct KerberosToken
 	KerberosTokenType type;
 	char* token;
 } Token;
+
+Token* lexify(char* inString);
 
 #endif // LEXER_H
