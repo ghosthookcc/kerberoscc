@@ -1,0 +1,224 @@
+<digit> -> 0|1|2|3|4|5|6|7|8|9
+  LHS              RHS 
+lexemes /  terminals
+nonterminal
+
+<digit> has rules
+
+=================================================
+
+<digit> -> 0|1|2|3|4|5|6|7|8|9
+<nat>   -> <digit>
+        |  <digit><nat>
+^
+------- Kan defineras som att <nat> är en <digit> eller en <digit> följd av en <nat>
+
+| = eller, or
+
+<nat> är med andra ord rekursivt definerad i or statement
+
+<nat> -> <digit> är vad man kallar ett basecase
+<nat> -> <digit><nat> är vad man kallar ett recursive case
+
+<nat> => <digit><nat>
+      => 9<nat>
+      => 9<digit><nat>
+      => 93<nat>
+      => 93<digit>
+      => 930
+
+<nat> => <digit><nat>
+      => 0<nat>
+      => 0<digit>
+      => 03
+^
+------ kan starta som ett 0 värde, det borde inte gå logiskt sätt
+
+<nat> -> <digit>
+      |  <nonzero><digits>
+<digits> -> <digit>
+         |  <digit><digits>
+<digit> -> 0 | <nonzero>
+<nonzero> -> 1|2|3|4|5|6|7|8|9
+^
+------ nu kan inte nummer börja med 0
+
+================================================= Parse Trees
+
+compiler
+parser
+parse trees
+
+<stmts> -> <stmt> | <stmt X stmts>
+<stmt> -> <assign> ;| <if-stmt>
+<assign> -> id = id
+<if-stmt> -> if (<boolean-expr>) <stmt>
+          |  if (<boolean-expr>) <stmt> else <stmt>
+<boolean-expr> -> id == id
+
+<stmts> => <stmt><stmts>
+        => <assign>;<stmts>
+        => id = id; <stmts>
+        => id = id; <stmt>
+        => id = id; <if-stmt>
+        => id = id; if(<boolean-expr>) <stmt> else <stmt>
+        => id = id; if (id == id) <stmt> else <stmt>
+        => id = id; if (id == id) <assign>; else <stmt>
+        => id = id; if (id == id) id = id; else <stmt>
+        => id = id; if (id == id) id = id; else <assign>;
+        => id = id; if (id == id) id = id; else id = id;
+
+threshold=userInput;
+if(threshold==criticalValue)
+  result=specialValue
+else
+  result=userInput
+
+
+   <stmts>---
+   |        |
+<stmt>----  <stmts>
+|        |  |
+|        |  <stmt>
+|        |  |
+<assign> ;  <if-stmt>--------------------------
+|   |  |    |  | |              | |      |    |
+id  =  id   if ( <boolean-expr> ) <stmt> else <stmt>
+                 |     |      |   |    ----|  |    ----|
+                 |     |      |   |        |  <assign> ;
+                 id    ==     id  <assign> ;  |  |   |
+                                  |   |  |    id =   id
+                                  id  =  id
+=> id = id; if (id == id) id = id; else id = id;
+
+================================================= Ambigious Grammar
+
+1)
+if (value == best)
+  if (update == userUpdate)
+    userBest = value;
+  else
+    groupBest = value;
+
+vs
+
+2)
+if (value == best)
+  if (update == userUpdate)
+    userBest = value;
+else
+  groupBest = value;
+^
+--------------- 1) and 2) means the same thing, only 1 should mean what we intend
+
+================================================= New grammar to fix the problem
+
+<stmts>        -> <stmt>|<stmt><stmts>
+<stmt>         -> <matched>|<unmatched>
+<matched>      -> <assign>;
+               |  if(<boolean-expr>)<matched>else<matched>
+<unmatched>    -> if(<boolean-expr>)<stmt>
+               |  if(<boolean-expr>)<matched>else<unmatched>
+<assign>       -> id=id
+<boolean-expr> -> id==id
+
+if(value==best)if(update==userUpdate)userBest=value;elsegroupBest=value;
+
+<if-stmt> -> if(<bool>)<stmt>
+          |  if(<bool>)<stmt>else<stmt>
+<=>
+<if-stmt> -> if(<bool>)<stmt>[else<stmt>]
+
+anything within brackets, [], defines that something is optional 
+
+BNF:
+    <expr> -> <expr>+<term>
+           |  <term>
+    <term> -> id|literal
+EBNF:
+    <expr> -> <term>{+<term>}
+    <term> -> id|literal
+REGULAR EXPRESSION W/KLEENE STAR:
+    <expr> -> <term>(+<term>)*
+    <term> -> id|literal
+^
+----- All 3, BNF, EBNF, REGEXP, defines the same rule
+
+<uint>    -> <nonzero><digit>*
+<nonzero> -> 1|2|3|4|5|6|7|8|9
+<digit>   -> 0|<nonzero>
+
+<=>
+
+<uint>   -> <nonzero>(0|<nonzero>)*
+<nonzero -> 1|2|3|4|5|6|7|8|9
+
+<=>
+
+<uint> -> (1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9)*
+
+<=>
+
+<scientific-notation> -> (+|-)<digit>.<digit>+e(+|-)(0|<uint>))
+                                             |
+                                             Will repeat <digit> atleast once, is actually ^+ (EBNF)
+= +1.57e^(-7)
+= -5.0e+532
+= -5.0*10^(532)
+= +0.327e^(-6)
+
+All terminals should be in quotes to specify what is not part of the grammar and the other way around:
+
+<scientific-notation> -> ('+'|'-')<digit>'.'<digit>+'e'('+'|'-')('0'|<uint>)
+
+Kleene Star version Expressions:
+    <expr>   -> <term>(('+'|'-')<term>)*
+    <term>   -> <factor>(('*'|'/')<factor>)*
+    <factor> -> <exp>('^'<exp>)*
+    <exp>    -> '('<exp>')'|'id'|'literal'
+
+EBNF version Expressions:
+    <expr>   -> <term>{(+|-)<term>}
+    <term>   -> <factor>{(*|/)<factor>}
+    <factor> -> <exp>{^<exp>}
+    <exp>    -> (<expr>)|id|literal    
+
+( 5 + x ) - y ^ 7 * ( ( 8 / z - 2 * a ) ^ 10 + b )
+  |   |     |   |       |   |   |   |---|  |   |
+  lit id    --id-lit-   lit id  lit---- id -lit-id------|
+  |   |-|     |     |   |-| |----     | |---| |----     |
+  <exp> <exp> <exp> <exp> <exp> <exp> <exp> <exp> <exp> <exp>
+
+( 5 + x ) - y ^ 7 * ( ( 8 / z - 2 * a ) ^ 10 + b )
+              |
+              <factor> 
+
+There are more factors that i cant be bothered to write out
+
+================================================= Order of operands
+
+5 + 7 + 3 + 8 - 6 - 4 - 1 | 5 + 7 + 3 + 8 - 6 - 4 - 1
+  12                      |                       3
+      15                  |                   3
+          23              |               5
+              17          |           8
+                  13      |       15
+                      12  |   20
+
+LHS = correct                 RHS = incorrect
+
+<expr> -> <expr> (+|-)<term>|<term>
+left recursive and therefore left associative
+
+<factor> -> <exp>^<factor>|<exp>
+right recursive and therefore right associative
+
+======================================================================
+                   kerberoscc grammar start
+======================================================================
+
+
+
+======================================================================
+                   kerberoscc grammar end
+======================================================================
