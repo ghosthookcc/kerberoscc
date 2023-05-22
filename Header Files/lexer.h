@@ -3,6 +3,7 @@
 
 #include "file.h"
 #include "dArray.h"
+#include "string.h"
 
 static const char* KerberosOperations[] = 
 {
@@ -62,7 +63,7 @@ static const char* KerberosKeywords[] =
 	"unimplemented",
 	"return"
 };
-static int KerberosKeywordsLength = 36;
+static int KerberosKeywordsLength = 34;
 
 typedef enum KerberosTokenType
 {
@@ -75,16 +76,20 @@ typedef enum KerberosTokenType
 // 24 bytes in total
 typedef struct KerberosToken 
 {
-	char* token;
+	charArray* token;
 	KerberosTokenType type;
 	unsigned int startPosition;
 	unsigned int endPosition;
 } KerberosToken;
 
+void initKerberosToken(struct KerberosToken* kerbToken);
+
 charArray* nextToken(char* inString);
 
-struct KerberosToken* identifyToken(char* token);
+struct KerberosToken identifyToken(char* token,
+	                               unsigned int tokenStartOffset,
+	                               unsigned int tokenEndOffset);
 
-void lexify(char* inString);
+struct tokenArray* lexify(char* inString);
 
 #endif // LEXER_H

@@ -22,3 +22,16 @@ unsigned char stringEndsWith(char* string, char checkForChar)
 	}
 	return(endsWithChar);
 }
+
+int compareStrings(const char* str1, const char* str2) 
+{
+	// string1 < string2 => return a negative integer
+	// string1 > string2 => return a positive integer
+	// string1 = string2 => return 0
+    while(*str1 && (*str1 == *str2)) 
+    {
+        str1++;
+        str2++;
+    }
+    return *str1 - *str2;
+}
