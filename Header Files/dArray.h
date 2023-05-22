@@ -84,4 +84,25 @@ void freeStringArray(stringArray** target);
 
 /* End stringArray declaration */
 
+/* Start tokenArray declaration */
+
+#include "lexer.h"
+
+typedef struct tokenArray
+{
+	struct KerberosToken** items;
+	unsigned int realSize;
+	unsigned int capacity;
+} tokenArray;
+
+tokenArray* initTokenArray(unsigned int initCapacity);
+
+void pushToken(tokenArray** target, struct KerberosToken* item);
+
+void printTokenArray(tokenArray** target);
+
+void freeTokenArray(tokenArray** target);
+
+/* End tokenArray declaration */
+
 #endif // DARRAY_H

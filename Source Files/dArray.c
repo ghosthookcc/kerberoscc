@@ -213,3 +213,56 @@ void freeStringArray(stringArray** target)
 }
 
 /* End stringArray definition */
+
+/* Start tokenArray definition */
+
+tokenArray* initTokenArray(unsigned int initCapacity)
+{
+	tokenArray* new = malloc(sizeof(tokenArray*) + sizeof(KerberosToken) * initCapacity);
+	new->items = malloc(sizeof(KerberosToken) * initCapacity);
+	new->realSize = 0;
+	new->capacity = initCapacity;
+	return(new);
+}
+
+void pushToken(tokenArray** target, struct KerberosToken* item)
+{
+	tokenArray* targetDerefed = *target;
+	if ( targetDerefed->realSize == targetDerefed->capacity )
+	{
+		// Grow target array by 2k+1
+		targetDerefed->capacity = targetDerefed->capacity * 2 + 1;
+		targetDerefed->items = realloc(targetDerefed->items, sizeof(KerberosToken*) * targetDerefed->capacity);
+	}
+	targetDerefed->items[targetDerefed->realSize] = item;
+	targetDerefed->realSize++;
+}
+
+void printTokenArray(tokenArray** target)
+{
+	printf("\n");
+	tokenArray* targetDerefed = *target;
+	for (unsigned int idx = 0; idx < targetDerefed->realSize; idx++)
+	{
+		printf("Token[%s]\n"
+			   "Type[%d]\n"
+			   "StartPos[%d]\n"
+			   "EndPos[%d]\n", 
+			    targetDerefed->items[idx]->token,
+			    targetDerefed->items[idx]->type,
+			    targetDerefed->items[idx]->startPosition,
+			    targetDerefed->items[idx]->endPosition);
+	}
+	printf("\n");	
+}
+
+void freeTokenArray(tokenArray** target)
+{
+	tokenArray* targetDerefed = *target;
+	free(targetDerefed->items);
+	targetDerefed->items = NULL;
+	targetDerefed->realSize = targetDerefed->capacity = 0;
+	free(targetDerefed);
+}
+
+/* End tokenArray definition */
