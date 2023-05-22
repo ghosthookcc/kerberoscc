@@ -44,10 +44,12 @@ int main(void)
 	{
 		string = initCharArray(10);
 		pushChar(&string, 'h');
+		pushChars(&string, "Hello");
 		pushString(&test4, string);
 	}
 	printStringArray(&test4);
 	freeStringArray(&test4);
+
 
   	return 0;
 }
