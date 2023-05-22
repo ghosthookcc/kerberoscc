@@ -8,6 +8,8 @@ int main(void)
 	FILE* sourceFile = openFile("../LanguageCode.cb", "r", (long int)NULL);
 	char* sourceCode = readAll(sourceFile);
 
+	//lexify(sourceCode);
+
 	//Token* tokens = lexify(sourceCode);
 
 	//free(tokens);
@@ -38,18 +40,26 @@ int main(void)
 	printCharArray(&test3);
 	freeCharArray(&test3);
 
+	tokenArray* testTokenArray = initTokenArray(12);
+	KerberosToken testToken = { "asd", 
+                                operation,
+                                12,
+                                15 }; 
+  	pushToken(&testTokenArray, &testToken);
+  	printTokenArray(&testTokenArray);
+  	freeTokenArray(&testTokenArray);
+
 	stringArray* test4 = initStringArray(12);
 	charArray* string = NULL;
 	for (int idx = 1; idx <= 10; idx++)
 	{
 		string = initCharArray(10);
-		pushChar(&string, 'h');
-		pushChars(&string, "Hello");
+		pushChar(&string, 'm');
+		pushChars(&string, "_initValue");
 		pushString(&test4, string);
 	}
 	printStringArray(&test4);
 	freeStringArray(&test4);
-
 
   	return 0;
 }

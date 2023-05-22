@@ -2,6 +2,7 @@
 #define LEXER_H
 
 #include "file.h"
+#include "dArray.h"
 
 static const char* KerberosOperations[] = 
 {
@@ -74,12 +75,16 @@ typedef enum KerberosTokenType
 // 24 bytes in total
 typedef struct KerberosToken 
 {
+	char* token;
+	KerberosTokenType type;
 	unsigned int startPosition;
 	unsigned int endPosition;
-	KerberosTokenType type;
-	char* token;
-} Token;
+} KerberosToken;
 
-Token* lexify(char* inString);
+charArray* nextToken(char* inString);
+
+struct KerberosToken* identifyToken(char* token);
+
+void lexify(char* inString);
 
 #endif // LEXER_H
