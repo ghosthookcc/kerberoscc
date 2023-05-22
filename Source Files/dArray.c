@@ -184,7 +184,10 @@ void printStringArray(stringArray** target)
 void freeStringArray(stringArray** target)
 {
 	stringArray* targetDerefed = *target;
-	freeCharArray(targetDerefed->items);
+	for (unsigned int idx = 0; idx < targetDerefed->realSize; idx++)
+	{
+		freeCharArray(&targetDerefed->items[idx]);
+	}
 	free(targetDerefed->items);
 	targetDerefed->items = NULL;
 	targetDerefed->realSize = targetDerefed->capacity = 0;
