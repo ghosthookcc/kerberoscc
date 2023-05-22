@@ -109,7 +109,7 @@ charArray* initCharArray(unsigned int initCapacity)
 	new->items[new->realSize] = '\0';
 
 	return(new);
-}	
+}		
 
 void pushChar(charArray** target, char item)
 {
@@ -122,6 +122,24 @@ void pushChar(charArray** target, char item)
 	}
 	targetDerefed->items[targetDerefed->realSize] = item;
 	targetDerefed->realSize++;			
+	targetDerefed->items[targetDerefed->realSize] = '\0';
+}
+
+void pushChars(charArray** target, char* item)
+{
+	charArray* targetDerefed = *target;
+	unsigned int itemCharsLen = sizeof(char) * getStringLen(item);
+	if (targetDerefed->realSize == targetDerefed->capacity )
+	{
+		// Grow target array by 2k+1
+		targetDerefed->capacity = itemCharsLen + (targetDerefed->capacity * 2) + 1;
+		targetDerefed->items = realloc(targetDerefed->items, sizeof(char) * targetDerefed->capacity);
+	}
+	for (unsigned int idx = 0; idx < itemCharsLen; idx++)
+	{
+		targetDerefed->items[targetDerefed->realSize] = (char)item[idx];
+		targetDerefed->realSize++;
+	}
 	targetDerefed->items[targetDerefed->realSize] = '\0';
 }
 

@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "string.h"
+
 /* Start int32Array declaration */
 
 typedef struct i32Array
@@ -55,6 +57,8 @@ charArray* initCharArray(unsigned int initCapacity);
 
 void pushChar(charArray** target, char item);
 
+void pushChars(charArray** target, char* item);
+
 void printCharArray(charArray** target);
 
 void freeCharArray(charArray** target);
@@ -80,4 +84,4 @@ void freeStringArray(stringArray** target);
 
 /* End stringArray declaration */
 
-#endif
+#endif // DARRAY_H
