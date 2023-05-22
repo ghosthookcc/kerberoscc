@@ -4,23 +4,80 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef struct int32Array
-{
-	unsigned int realSize;
-	unsigned int capacity;
-	int* items;
-} int32Array;
-
 /* Start int32Array declaration */
 
-int32Array* initInt32Array(unsigned int initCapacity);
+typedef struct i32Array
+{
+	int* items;
+	unsigned int realSize;
+	unsigned int capacity;
+} i32Array;
 
-void pushInt32(int32Array** target, int item);
+i32Array* initI32Array(unsigned int initCapacity);
 
-void printInt32Array(int32Array** target);
+void pushI32(i32Array** target, int item);
 
-void freeInt32Array(int32Array** target);
+void printI32Array(i32Array** target);
 
-/* End int32Array declaration */
+void freeI32Array(i32Array** target);
+
+/* End i32Array declaration */
+
+/* Start f32Array declaration */
+
+typedef struct f32Array
+{
+	float* items;
+	unsigned int realSize;
+	unsigned int capacity;
+} f32Array;
+
+f32Array* initF32Array(unsigned int initCapacity);
+
+void pushF32(f32Array** target, float item);
+
+void printF32Array(f32Array** target);
+
+void freeF32Array(f32Array** target);
+
+/* End f32Array declaration */
+
+/* Start charArray declaration */
+
+typedef struct charArray
+{
+	char* items;
+	unsigned int realSize;
+	unsigned int capacity;
+} charArray;
+
+charArray* initCharArray(unsigned int initCapacity);
+
+void pushChar(charArray** target, char item);
+
+void printCharArray(charArray** target);
+
+void freeCharArray(charArray** target);
+
+/* End charArray declaration */
+
+/* Start stringArray declaration */
+
+typedef struct stringArray
+{
+	charArray** items;
+	unsigned int realSize;
+	unsigned int capacity;
+} stringArray;
+
+stringArray* initStringArray(unsigned int initCapacity);
+
+void pushString(stringArray** target, charArray* item);
+
+void printStringArray(stringArray** target);
+
+void freeStringArray(stringArray** target);
+
+/* End stringArray declaration */
 
 #endif
