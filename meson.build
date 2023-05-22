@@ -8,7 +8,8 @@ basesources = ['main.c',
 			   basesourcesdir+'dArray.c',
 			   basesourcesdir+'file.c',
                basesourcesdir+'lexer.c',
-               basesourcesdir+'parser.c']
+               basesourcesdir+'parser.c',
+               basesourcesdir+'string.c']
 
 executable('demo', 
 	       basesources, 
