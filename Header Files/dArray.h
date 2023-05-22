@@ -90,14 +90,14 @@ void freeStringArray(stringArray** target);
 
 typedef struct tokenArray
 {
-	struct KerberosToken** items;
+	struct KerberosToken* items;
 	unsigned int realSize;
 	unsigned int capacity;
 } tokenArray;
 
 tokenArray* initTokenArray(unsigned int initCapacity);
 
-void pushToken(tokenArray** target, struct KerberosToken* item);
+void pushToken(tokenArray** target, struct KerberosToken item);
 
 void printTokenArray(tokenArray** target);
 

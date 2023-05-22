@@ -225,7 +225,7 @@ tokenArray* initTokenArray(unsigned int initCapacity)
 	return(new);
 }
 
-void pushToken(tokenArray** target, struct KerberosToken* item)
+void pushToken(tokenArray** target, struct KerberosToken item)
 {
 	tokenArray* targetDerefed = *target;
 	if ( targetDerefed->realSize == targetDerefed->capacity )
@@ -247,11 +247,11 @@ void printTokenArray(tokenArray** target)
 		printf("Token[%s]\n"
 			   "Type[%d]\n"
 			   "StartPos[%d]\n"
-			   "EndPos[%d]\n", 
-			    targetDerefed->items[idx]->token,
-			    targetDerefed->items[idx]->type,
-			    targetDerefed->items[idx]->startPosition,
-			    targetDerefed->items[idx]->endPosition);
+			   "EndPos[%d]\n\n", 
+			    targetDerefed->items[idx].token->items,
+			    targetDerefed->items[idx].type,
+			    targetDerefed->items[idx].startPosition,
+			    targetDerefed->items[idx].endPosition);
 	}
 	printf("\n");	
 }
