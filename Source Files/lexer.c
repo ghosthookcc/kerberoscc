@@ -2,13 +2,12 @@
 
 void initKerberosToken(struct KerberosToken* kerbToken)
 {
-	kerbToken->token = initCharArray(7);
+	kerbToken->token = initCharArray(0);
 }
 
 charArray* nextToken(char* inString)
 {
-	charArray* token = initCharArray(7); 
-
+	charArray* token = initCharArray(0); 
 	while (inString[0] != ' '
 	&&	   inString[0] != '\n'
 	&&     inString[0] != '\0')
@@ -56,7 +55,7 @@ tokenArray* lexify(char* inString)
 	unsigned int tokenStartOffset = 0;
 	unsigned int tokenEndOffset   = 0;
 
-	tokenArray* identifiedTokens = initTokenArray(100);
+	tokenArray* identifiedTokens = initTokenArray(0);
 	
 	charArray* token;
 	unsigned int tokenLength;
@@ -64,15 +63,18 @@ tokenArray* lexify(char* inString)
 	struct KerberosToken identifiedToken;
 	while (1)
 	{
+
 		token = nextToken(inString);
 		tokenLength = getStringLen(token->items);
 
 		if (inString[0] == '\0')
 		{
+			freeCharArray(&token);
 			break;
 		}
-		if (token->realSize == 0)
+		else if (token->realSize == 0)
 		{ 
+			freeCharArray(&token);
 			inString++;
 			continue;
 		}
@@ -84,6 +86,7 @@ tokenArray* lexify(char* inString)
 			                            tokenEndOffset);
 		pushToken(&identifiedTokens, identifiedToken);
 		tokenStartOffset = tokenEndOffset;
+		freeCharArray(&token);
 	}
 	return(identifiedTokens);
 }

@@ -76,10 +76,10 @@ typedef enum KerberosTokenType
 // 24 bytes in total
 typedef struct KerberosToken 
 {
-	charArray* token;
-	KerberosTokenType type;
 	unsigned int startPosition;
 	unsigned int endPosition;
+	KerberosTokenType type;
+	charArray* token;
 } KerberosToken;
 
 void initKerberosToken(struct KerberosToken* kerbToken);

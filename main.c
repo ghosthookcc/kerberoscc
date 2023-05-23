@@ -15,7 +15,7 @@ int main(void)
 	free(sourceCode);
 	fclose(sourceFile);
 
-	i32Array* test = initI32Array(12);
+	i32Array* test = initI32Array(0);
 	for (int idx = 1; idx <= 100; idx++)
 	{
 		pushI32(&test, idx);
@@ -23,7 +23,7 @@ int main(void)
 	printI32Array(&test);
 	freeI32Array(&test);
 
-	f32Array* test2 = initF32Array(12);
+	f32Array* test2 = initF32Array(0);
 	for (int idx = 1; idx <= 100; idx++)
 	{
 		pushF32(&test2, (float)(idx+0.5f));
@@ -31,7 +31,7 @@ int main(void)
 	printF32Array(&test2);
 	freeF32Array(&test2);
 
-	charArray* test3 = initCharArray(12);
+	charArray* test3 = initCharArray(0);
 	for (int idx = 48; idx <= 122; idx++)
 	{
 		pushChar(&test3, (char)idx);
@@ -39,11 +39,10 @@ int main(void)
 	printCharArray(&test3);
 	freeCharArray(&test3);
 
-	tokenArray* test5 = initTokenArray(12);
+	tokenArray* test5 = initTokenArray(0);
 	struct KerberosToken tokenToPush; 
 	initKerberosToken(&tokenToPush);
 	pushChars(&tokenToPush.token, "asd");
-
 	tokenToPush.type = operation;
 	tokenToPush.startPosition = 11;
 	tokenToPush.endPosition   = 12;
@@ -51,7 +50,11 @@ int main(void)
 	printTokenArray(&test5);
 	freeTokenArray(&test5);
 
-	stringArray* test4 = initStringArray(12);
+	/*
+	===========================================
+	@ THIS CODE HAS MEMORY WRITE/READ ERRORS  @
+	===========================================
+	stringArray* test4 = initStringArray(0);
 	charArray* string = NULL;
 	for (int idx = 1; idx <= 10; idx++)
 	{
@@ -62,6 +65,7 @@ int main(void)
 	}
 	printStringArray(&test4);
 	freeStringArray(&test4);
+	*/
 
   	return 0;
 }

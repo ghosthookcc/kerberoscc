@@ -4,7 +4,7 @@
 
 i32Array* initI32Array(unsigned int initCapacity)
 {
-	i32Array* new = malloc(sizeof(i32Array*) + (sizeof(int) * initCapacity));
+	i32Array* new = malloc(sizeof(*new) + (sizeof(int) * initCapacity));
 	
 	new->items = malloc(sizeof(int) * initCapacity);
 	new->realSize = 0;
@@ -52,7 +52,7 @@ void freeI32Array(i32Array** target)
 
 f32Array* initF32Array(unsigned int initCapacity)
 {
-	f32Array* new = malloc(sizeof(f32Array*) + (sizeof(float) * initCapacity));
+	f32Array* new = malloc(sizeof(*new) + (sizeof(float) * initCapacity));
 	
 	new->items = malloc(sizeof(float) * initCapacity);
 	new->realSize = 0;
@@ -100,7 +100,7 @@ void freeF32Array(f32Array** target)
 
 charArray* initCharArray(unsigned int initCapacity)
 {
-	charArray* new = malloc(sizeof(charArray*) + (sizeof(char) * initCapacity));
+	charArray* new = malloc(sizeof(*new) + (sizeof(char) * initCapacity));
 	
 	new->items = malloc((sizeof(char) * initCapacity) + 1);
 	new->realSize = 0;
@@ -166,9 +166,9 @@ void freeCharArray(charArray** target)
 
 stringArray* initStringArray(unsigned int initCapacity)
 {
-	stringArray* new = malloc(sizeof(stringArray*) + (sizeof(charArray*) * initCapacity));
+	stringArray* new = malloc(sizeof(*new) + (sizeof(charArray) * initCapacity));
 
-	new->items = malloc(sizeof(charArray*) * initCapacity);
+	new->items = malloc(sizeof(new->items) * initCapacity);
 	new->realSize = 0;
 	new->capacity = initCapacity;
 
@@ -218,8 +218,8 @@ void freeStringArray(stringArray** target)
 
 tokenArray* initTokenArray(unsigned int initCapacity)
 {
-	tokenArray* new = malloc(sizeof(tokenArray*) + sizeof(KerberosToken) * initCapacity);
-	new->items = malloc(sizeof(KerberosToken) * initCapacity);
+	tokenArray* new = malloc(sizeof(*new) + sizeof(struct KerberosToken) * initCapacity);
+	new->items = malloc(sizeof(struct KerberosToken) * initCapacity);
 	new->realSize = 0;
 	new->capacity = initCapacity;
 	return(new);
@@ -232,7 +232,7 @@ void pushToken(tokenArray** target, struct KerberosToken item)
 	{
 		// Grow target array by 2k+1
 		targetDerefed->capacity = targetDerefed->capacity * 2 + 1;
-		targetDerefed->items = realloc(targetDerefed->items, sizeof(KerberosToken*) * targetDerefed->capacity);
+		targetDerefed->items = realloc(targetDerefed->items, sizeof(struct KerberosToken) * targetDerefed->capacity);
 	}
 	targetDerefed->items[targetDerefed->realSize] = item;
 	targetDerefed->realSize++;
@@ -259,6 +259,10 @@ void printTokenArray(tokenArray** target)
 void freeTokenArray(tokenArray** target)
 {
 	tokenArray* targetDerefed = *target;
+	for (unsigned int idx = 0; idx < targetDerefed->realSize; idx++)
+	{
+		freeCharArray(&targetDerefed->items[idx].token);
+	}
 	free(targetDerefed->items);
 	targetDerefed->items = NULL;
 	targetDerefed->realSize = targetDerefed->capacity = 0;
