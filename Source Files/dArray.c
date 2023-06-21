@@ -129,15 +129,15 @@ void pushChars(charArray** target, char* item)
 {
 	charArray* targetDerefed = *target;
 	unsigned int itemCharsLen = sizeof(char) * getStringLen(item);
-	if (targetDerefed->realSize == targetDerefed->capacity )
+	if ( targetDerefed->realSize + itemCharsLen > targetDerefed->capacity )
 	{
-		// Grow target array by 2k+1
-		targetDerefed->capacity = itemCharsLen + (targetDerefed->capacity * 2) + 1;
+		// Grow target array by ((n + strLen) + 2k)+1
+		targetDerefed->capacity = (targetDerefed->realSize + itemCharsLen) + (targetDerefed->capacity * 2) + 1;
 		targetDerefed->items = realloc(targetDerefed->items, sizeof(char) * targetDerefed->capacity);
 	}
 	for (unsigned int idx = 0; idx < itemCharsLen; idx++)
 	{
-		targetDerefed->items[targetDerefed->realSize] = (char)item[idx];
+		targetDerefed->items[targetDerefed->realSize] = item[idx];
 		targetDerefed->realSize++;
 	}
 	targetDerefed->items[targetDerefed->realSize] = '\0';
@@ -182,7 +182,7 @@ void pushString(stringArray** target, charArray* item)
 	{
 		// Grow target array by 2k+1
 		targetDerefed->capacity = targetDerefed->capacity * 2 + 1;
-		targetDerefed->items = realloc(targetDerefed->items, sizeof(charArray*) * targetDerefed->capacity);	
+		targetDerefed->items = realloc(targetDerefed->items, sizeof(charArray) * targetDerefed->capacity);	
 	}
 	targetDerefed->items[targetDerefed->realSize] = item;
 	targetDerefed->realSize++;
@@ -218,7 +218,7 @@ void freeStringArray(stringArray** target)
 
 tokenArray* initTokenArray(unsigned int initCapacity)
 {
-	tokenArray* new = malloc(sizeof(*new) + sizeof(struct KerberosToken) * initCapacity);
+	tokenArray* new = malloc(sizeof(tokenArray) + sizeof(struct KerberosToken) * initCapacity);
 	new->items = malloc(sizeof(struct KerberosToken) * initCapacity);
 	new->realSize = 0;
 	new->capacity = initCapacity;
