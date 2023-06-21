@@ -50,13 +50,9 @@ int main(void)
 	printTokenArray(&test5);
 	freeTokenArray(&test5);
 
-	/*
-	===========================================
-	@ THIS CODE HAS MEMORY WRITE/READ ERRORS  @
-	===========================================
 	stringArray* test4 = initStringArray(0);
 	charArray* string = NULL;
-	for (int idx = 1; idx <= 10; idx++)
+	for (unsigned int idx = 0; idx <= 10; idx++)
 	{
 		string = initCharArray(10);
 		pushChar(&string, 'm');
@@ -65,7 +61,6 @@ int main(void)
 	}
 	printStringArray(&test4);
 	freeStringArray(&test4);
-	*/
 
   	return 0;
 }
