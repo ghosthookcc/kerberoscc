@@ -1,3 +1,7 @@
+#include <time.h>
+#include <stdio.h>
+#include <unistd.h>
+
 #include "Header Files/dArray.h"
 #include "Header Files/file.h"
 #include "Header Files/lexer.h"
@@ -5,6 +9,9 @@
 
 int main(void) 
 {
+    struct timespec begin, end;
+    clock_gettime(CLOCK_MONOTONIC_RAW, &begin);
+
 	FILE* sourceFile = openFile("../LanguageCode.cb", "r", (long int)NULL);
 	char* sourceCode = readAll(sourceFile);
 
@@ -61,6 +68,11 @@ int main(void)
 	}
 	printStringArray(&test4);
 	freeStringArray(&test4);
+
+	clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+	printf ("Total time = %f seconds\n",
+            (end.tv_nsec - begin.tv_nsec) / 1000000000.0 +
+            (end.tv_sec  - begin.tv_sec));
 
   	return 0;
 }
