@@ -1,11 +1,12 @@
 // global -> local -> shared
    
-// decorators should be a thing to be implemented for later:
-// decorators start with @, for example,
-// @server just before basis adding the decorator functionallity for the basis
-// decorator syntax can also be used when overloading, for example,
+// callable and/or implementable macros should be a thing to be implemented for later:
+// callable macros start with @, for example,
+// @server just before basis implements the macro (like a decorator in this case)
+// implementable macro syntax can also be used when overloading, for example,
 // @multiply(vec3f1, vec3f2) which would execute the overload for the name multiply,
 // in this case it would multiply vec3f1 with vec3f2 using the rules defined in the overload
+// print@("SOMETEXT") would be an example of a callable macro
 
 // macros should be a thing to be implemented for later:
 // macros end with @ when called, for example,
@@ -23,7 +24,13 @@
 
 // should be able to type u8 or char for unsigned int of byte size 1, in bits, being 8
 
-global basis main() return i32
+// [] after a macro definition is used to specify the arguments for a macro
+// Macros do not end with semi colons
+// Below 2 lines, "package@" are redundent when "init.json" is properly implemented
+// package@["SYS"]("stdlib.cb");          // include sourcefile code navigation start from default systempath
+// package@["LOC"]("../stuffandshit.cb"); // include sourcefile code navigation start from local filepath
+
+global basis main(void) return i32
 {
 	output: char = getFifth[char](); // before (), [char] = return type of function
 	output2: string = getFifth[string](); 
@@ -36,35 +43,41 @@ global basis main() return i32
 
 	print@(vectorOut); // would need a toString function to make this properly work with print macro
 
+	test.printPhrase("Hello World!"); // Would output "Hello World!" to the console
+	// Below line means that we could have to functions with the same name in one composition
+	// Would also output "Hello World!"
+	test.coolEssentials.printPhrase("Hello World!");
 	/* output2: char = getFifth<i32>[char](12); this would mean that the first argument passed is a i32 type and the return type will be a char, the input value for the argument is an i32 with the value 12 */
 } 
 
-global basis getFifth() return [char | string]
+global basis getFifth(void) return [char | string]
 {
 	global for scope
-	[
+	{
 		// do stuff here that every return has access to
-	];
+	} 
 
 	local for scope[char]
-	[
+	{
 		charStart: char = 'a'; 
-	];
+	}
 	
 	local for scope[string]
-	[
-		strStart: i32 = "abc"; 
-	];
-}
-
-impl return char for getFifth with ()
-{
-	while ( scope[local].charStart as i32 < 'e' as i32 )
 	{
-		scope[local].charStart++;
+		strStart: i32 = "abc"; 
 	}
 }
-impl return string for getFifth with ()
+
+impl return char as getFifth with (void)
+{
+	// Är det här värt att ha med? Känns ganska värdelöst . . .
+	@basis_include scope[local];
+	while ( scope[local].charStart as i32 < 'e' as i32 )
+	{
+		local.charStart++;
+	}
+}
+impl return string as getFifth with (void)
 {
 	findNewEndOfString: i32 = (scope[local].strStart[::-1] as i32)++;
 	while (findNewEndOfString < ('e' as i32))
@@ -74,45 +87,101 @@ impl return string for getFifth with ()
 	}	
 }
 
+// Depth counter = 0
+// The members of composition Test can be accessed from Depth level 1 using Base keyword . . .
 global composition Test
 {
-	global basis m1 with (i: f32, j: i32) return void for Test
+	global for scope
+	{
+		// Members can be accessed from anywhere . . .
+	}
+
+	local for scope
+	{
+		// Members can only be accessed in composition "Test" . . .
+	}
+
+	shared for scope
+	{
+		// Members can only be accessed in composition "Test" and 
+		// compositions cast to "Test", basically "Unit" would be allowed 
+		// to access these members . . .
+
+		sum: i32[_];
+	}
+
+	// If "compound@(X)" is removed, you would need to type the full path to the component&componentMember
+	compound@(coolEssentials);
+	component coolEssentials
+	{
+		printPhrase(text: string)
+		{
+			print@(text);
+		}
+	}
+
+	global basis m1 with (i: f32, j: i32) return void
 	{
 		print@("f32, i32 :: method");
 	}  
-	global basis m1 with (i: f32, j: f32) return void for Test
+	global basis m1 with (i: f32, j: f32) return void
 	{
 		print@("f32, f32 :: method");
 	}
-}
 
-global composition Math
-{
-	constructor with (number: i32) for Math
-	[
-
-	];
-	
-	// border även kunna skrivas som:
-	/*
-	constructor with (number: i32) for composition as Base // kanske kan ha det här: using (number: i32)
-	[
-
-	];
-	*/
-}
-
-type vec3f for Math
-{
-	constructor with (x: f32, y: f32, z: f32) for vec3f
+	constructor with (x: i32, y: i32)
 	{
-		self.x = x;
-		self.y = y;
-		self.z = z;	
+		sum += (x + y);
 	}
 }
 
-impl basis isZero with () return vec3f for vec3f
+// Depth counter = 1
+global composition Unit as Test
+{
+	// Compositions can not be cast another time to "Unit" in this case
+	// This is to reduce abstraction and complexity of codebases
+
+	global basis printNewValue with (void) return void
+	{
+		// Would need a toString function to make this work
+		print@(Base.sum);
+	}
+
+	constructor with (anotherSum: i32)
+	{
+		Base.constructor(__build__);
+		Base.sum += anotherSum;
+	}
+}
+
+/* A composition should encapsulate all necessary data, components, types, etc . . . */
+global composition Math
+{
+	constructor with (number: i32)
+	{
+
+	}
+	
+	// borde även kunna skrivas som:
+	/*
+	constructor with (number: i32) // kanske kan ha det här: using (number: i32)
+	{
+
+	}
+	*/
+}
+
+component mathEssentials
+{
+	basis isZero = isZero<void>[vec3f];
+
+	basis sum with (x: i32, y: i32) return i32
+	{
+		return x + y;
+	}
+}
+
+global basis isZero with (void) return vec3f
 {
 	isZero: bool = False;
 	if ( self.x == 0.0f 
@@ -124,7 +193,23 @@ impl basis isZero with () return vec3f for vec3f
 	return isZero;
 } 
 
-overload @multiply for vec3f with other vec3f
+compound@(mathEssentials);
+impl type vec3f for Math
+{
+	constructor with (x: f32, y: f32, z: f32)
+	{
+		self.x = x;
+		self.y = y;
+		self.z = z;	
+	}
+}
+
+// The macro is using something else, 
+// in this case the type vec3f 
+// using something means to define a body with said used item 
+// therefore, this looks different
+// it can also be refered to as an implementable macro . . .
+overload@(@multiply) for vec3f with other vec3f
 {
 	vec3f.x *= other.x;
 	vec3f.y *= other.y;
@@ -132,27 +217,27 @@ overload @multiply for vec3f with other vec3f
 	return vec3f;	
 }
 
+impl global composition Vector for Math
+{
+	constructor with (number: i32)
+	{
+
+	}
+
+	// border även kunna skrivas som:
+	/*
+	constructor with (number: i32)
+	{
+
+	}
+	*/
+}
+
 impl global basis isEven with (number: i32) return bool for Math // return could possibly be turned into keyword [returning] without the brackets?
 {
 	isEven: bool = False
 	if ( number % 2 == 0 ) isEven = True;
 	return isEven;
-}
-
-impl global composition Vector for Math
-{
-	constructor with (number: i32) for Vector
-	[
-
-	];
-
-	// border även kunna skrivas som:
-	/*
-	constructor with (number: i32) for composition as Child
-	[
-
-	];
-	*/
 }
 
 /*
