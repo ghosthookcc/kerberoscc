@@ -1,0 +1,24 @@
+Startup 
+{
+	MainInfo: 
+	{
+		startupFilePath: "SkissLanguageGrammar",
+		debug: True
+	},
+	Packages:
+	{
+		system: 
+		[
+			"stdlib.cb"
+		],
+
+		local:
+		[
+			"../stuffandshit.cb"
+		],
+
+		url:[],
+
+		Custom: // Build tools to be like cmake or other similar tooling
+	}
+}
